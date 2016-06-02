@@ -1,0 +1,77 @@
+#!/bin/bash
+
+echo "Creating clusters for WTF project"
+echo "Launching death_star cluster of 3 nodes"
+ctool launch death_star 3 &
+sleep 15
+echo "Launching alderaan cluster of 1 node"
+ctool launch -i c3.8xlarge alderaan 1 &
+sleep 15
+echo "Launching yavin_4 cluster of 1 node"
+ctool launch -i c3.8xlarge yavin_4 1 &
+wait
+echo "All clusters launched"
+echo "Installing DSE 5.0 on death_star cluster"
+ctool install -a eap -v 5.0.0-eap7 -n 128 death_star enterprise &
+echo "Installing DSE 5.0 on alderaan cluster"
+ctool install -a eap -v 5.0.0-eap7 -n 128 alderaan enterprise &
+echo "Installing DSE 5.0 on yavin_4 cluster"
+ctool install -a eap -v 5.0.0-eap7 -n 128 yavin_4 enterprise &
+wait
+echo "DSE Installed on all clusters"
+echo "Starting DSE on all clusters"
+ctool start death_star enterprise &
+ctool start alderaan enterprise &
+ctool start yavin enterprise &
+wait
+echo "DSE started on All clusters"
+
+#ALDERAAN_ADDRESS=`ctool info alderaan | grep "private hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+#YAVIN_4_ADDRESS=`ctool info yavin_4 | grep "private hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+
+ctool scp alderaan 0 configure_dense_nodes /home/automaton
+ctool scp yavin_4 0 configure_dense_nodes /home/automaton
+
+echo "Setting up Multi-instance on alderaan cluster"
+ctool run alderaan 0 './configure_dense_nodes' 
+echo "Setting up Multi-instance on yavin_4 cluster"
+ctool run yavin_4 0 './configure_dense_nodes'
+echo "sleeping 30 seconds to allow configuration changes to take effect"
+date
+sleep 30
+date
+
+echo "Starting DSE and additional nodes on alderaan cluster"
+date
+ctool start alderaan enterprise
+sleep 60
+date
+ctool run alderaan 0 'sudo service dse-alderaan_1 start'
+sleep 300
+date
+ctool run alderaan 0 'sudo service dse-alderaan_2 start'
+sleep 300
+date
+ctool run alderaan 0 'nodetool status'
+
+echo "Starting DSE and additional nodes on yavin_4 cluster"
+date
+ctool start yavin_4 enterprise
+sleep 60
+date
+ctool run yavin_4 0 'sudo service dse-yavin_4_1 start'
+sleep 300
+date
+ctool run yavin_4 0 'sudo service dse-yavin_4_2 start'
+sleep 300
+date
+ctool run yavin_4 0 'nodetool status'
+
+#ed -i -e 's/foo/bar/g' filename
+
+#script files on namek and tatooine should create dense node clusters using loopback addresses
+# hub nodes should be using tiered storage
+# namek and tatooine should replicate to hub
+# namek should have issue with replication introduced - schema change fixed by a restart of the edge
+
+
