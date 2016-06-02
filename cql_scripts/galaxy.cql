@@ -2,7 +2,7 @@
 CREATE KEYSPACE galaxy WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}  AND durable_writes = true;
 
 CREATE TABLE galaxy.colonial_data (
-    date timestamp,
+    date_hour timestamp,
     id text,
     edge_id text,
     read_time timestamp,
@@ -11,7 +11,7 @@ CREATE TABLE galaxy.colonial_data (
     flowthrough_velocity int,
     pressure double,
     volume float,
-    PRIMARY KEY ((date, id), edge_id, read_time, sequence, interval)
+    PRIMARY KEY ((date_hour, id), edge_id, read_time, sequence, interval)
 ) WITH CLUSTERING ORDER BY (edge_id ASC, read_time ASC, sequence ASC, interval ASC)
     AND bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}

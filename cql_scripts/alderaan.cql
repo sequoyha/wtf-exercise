@@ -2,7 +2,7 @@
 CREATE KEYSPACE alderaan WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}  AND durable_writes = true;
 
 CREATE TABLE alderaan.colonial_data (
-    date timestamp,
+    date_hour timestamp,
     id text,
     read_time timestamp,
     sequence int,
@@ -10,7 +10,7 @@ CREATE TABLE alderaan.colonial_data (
     flowthrough_velocity int,
     pressure double,
     volume float,
-    PRIMARY KEY ((date, id), read_time, sequence, interval)
+    PRIMARY KEY ((date_hour, id), read_time, sequence, interval)
 ) WITH CLUSTERING ORDER BY (read_time ASC, sequence ASC, interval ASC)
     AND bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
