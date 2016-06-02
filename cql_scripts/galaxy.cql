@@ -10,6 +10,7 @@ CREATE TABLE galaxy.colonial_data (
     interval int,
     flowthrough_velocity int,
     pressure double,
+    temperature float,
     volume float,
     PRIMARY KEY ((date_hour, id), edge_id, read_time, sequence, interval)
 ) WITH CLUSTERING ORDER BY (edge_id ASC, read_time ASC, sequence ASC, interval ASC)
