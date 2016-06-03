@@ -28,8 +28,8 @@ echo "DSE started on All clusters"
 
 #INSERT ADD CLUSTER FOR OPSCENTER HERE
 
-ctool scp alderaan 0 configure_dense_nodes /home/automaton
-ctool scp yavin_4 0 configure_dense_nodes /home/automaton
+ctool scp alderaan 0 config/configure_dense_nodes /home/automaton
+ctool scp yavin_4 0 config/configure_dense_nodes /home/automaton
 
 echo "Setting up Multi-instance on alderaan cluster"
 ctool run alderaan 0 './configure_dense_nodes' 
@@ -69,11 +69,11 @@ echo "Verifying all nodes in yavin_4 cluster are up and normal"
 ctool run yavin_4 0 'nodetool status'
 
 echo "Beginning schema work on yavin_4"
-ctool scp yavin_4 0 configure_schema /home/automaton
+ctool scp yavin_4 0 config/configure_schema /home/automaton
 ctool run yavin_4 0 './configure_schema'
 
 echo "Beginning schema work on alderaan"
-ctool scp alderaan 0 configure_schema /home/automaton
+ctool scp alderaan 0 config/configure_schema /home/automaton
 ctool run alderaan 0 './configure_schema'
 
 echo "Sleeping for 1 hour to allow data popualation before initiating Advanced Replication"

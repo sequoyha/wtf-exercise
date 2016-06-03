@@ -1,0 +1,23 @@
+#!/bin/bash
+
+git clone https://github.com/sequoyha/wtf-exercise.git
+
+HOST_ADDR=`ifconfig | grep "inet addr" | grep -v 127 | awk '{print $2}' | cut -d: -f2`
+CLUSTER=`sudo grep cluster_name /etc/dse/cassandra/cassandra.yaml | cut -d: -f2 | sed -e 's/^[ \t]*//'`
+
+if [ $CLUSTER == "alderaan" ]
+then 
+	echo "creating schema for alderaan"
+	cqlsh -f wtf-exercise/cql_scripts/alderaan.cql
+	echo "starting schieldClient for alderaan" 
+elif [ $CLUSTER == "yavin_4" ]
+then 
+	echo "creating schema for yavin_4"
+	cqlsh -f wtf-exercise/cql_scripts/yavin.cql
+	echo "starting schieldClient for yavin_4"
+elif [ $CLUSTER == "death_star" ]
+then 
+	echo "creating schema for death_star (galaxy)"
+	cqlsh -f wtf-exercise/cql_scripts/galaxy.cql
+fi
+java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER
