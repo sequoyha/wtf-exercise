@@ -2,9 +2,9 @@
 
 This exercise will bring up 3 separate clusters running DSE 5.0.
 
-* death\_star - A central hub cluster of 6 nodes for collecting data from all other monitored systems that are under the Emperor's rule
-* alderaan - a single EC2 c3.8xlarge instance (30 cpu - 60GB RAM) running 3 dense nodes as a standalone cluster
-* yavin\_4 - a single EC2 c3.8xlarge instance (30 cpu - 60GB RAM) running 3 dense nodes as a standalone cluster
+* *death\_star* - A central hub cluster of 6 nodes for collecting data from all other monitored systems that are under the Emperor's rule
+* *alderaan* - a single EC2 c3.8xlarge instance (30 cpu - 60GB RAM) running 3 dense nodes as a standalone cluster
+* *yavin\_4* - a single EC2 c3.8xlarge instance (30 cpu - 60GB RAM) running 3 dense nodes as a standalone cluster
 
 * * *
 
