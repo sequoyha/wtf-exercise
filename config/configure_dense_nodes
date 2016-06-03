@@ -8,12 +8,7 @@ sudo sed -i -e 's/9160/9161/g' /etc/dse-"${CLUSTER}_1"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9042/9043/g' /etc/dse-"${CLUSTER}_1"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9160/9162/g' /etc/dse-"${CLUSTER}_2"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9042/9043/g' /etc/dse-"${CLUSTER}_2"/cassandra/cassandra.yaml
-#sudo service dse restart
-#sleep 90
-#sudo service dse-"${CLUSTER}_1" start
-#sleep 120
-#sudo service dse-"${CLUSTER}_2" start
-#sleep 120
+
 if [ $CLUSTER == "alderaan" ]
 then 
 	echo "creating schema for alderaan"
