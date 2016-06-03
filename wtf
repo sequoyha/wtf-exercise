@@ -2,7 +2,7 @@
 
 echo "Creating clusters for WTF project"
 echo "Launching death_star cluster of 3 nodes"
-ctool launch death_star 3 &
+ctool launch death_star 4 &
 sleep 15
 echo "Launching alderaan cluster of 1 node"
 ctool launch -i c3.8xlarge alderaan 1 &
@@ -22,7 +22,7 @@ echo "DSE Installed on all clusters"
 echo "Starting DSE on all clusters"
 ctool start death_star enterprise &
 ctool start alderaan enterprise &
-ctool start yavin enterprise &
+ctool start yavin_4 enterprise &
 wait
 echo "DSE started on All clusters"
 
@@ -39,7 +39,7 @@ echo "sleeping 30 seconds to allow configuration changes to take effect"
 sleep 30
 
 echo "Starting DSE and additional nodes on alderaan cluster"
-ctool restart alderaan enterprise
+ctool restart alderaan 0 enterprise
 echo "Sleeping 60 seconds to allow restart to complete"
 sleep 60
 echo "Starting dse-alderaan_1"
@@ -54,7 +54,7 @@ echo "Verifying all nodes in alderaan cluster are up and normal"
 ctool run alderaan 0 'nodetool status'
 
 echo "Starting DSE and additional nodes on yavin_4 cluster"
-ctool restart yavin_4 enterprise
+ctool restart yavin_4 0 enterprise
 echo "Sleeping 60 seconds to allow restart to complete"
 sleep 60
 echo "Starting dse-yavin_4_1"
@@ -63,30 +63,22 @@ echo "Sleeping 5 minutes to allow dse-yavin_4_1 to bootstrap fully"
 sleep 300
 echo "Starting dse-yavin_4_2"
 ctool run yavin_4 0 'sudo service dse-yavin_4_2 start'
-echo "Sleeping 5 minutes to allow dse-yavin_4_1 to bootstrap fully"
+echo "Sleeping 5 minutes to allow dse-yavin_4_2 to bootstrap fully"
 sleep 300
 echo "Verifying all nodes in yavin_4 cluster are up and normal"
 ctool run yavin_4 0 'nodetool status'
 
 echo "Beginning schema work on yavin_4"
 ctool scp yavin_4 0 configure_schema /home/automaton
-ctool run yavin_4 './configure_schema'
+ctool run yavin_4 0 './configure_schema'
 
 echo "Beginning schema work on alderaan"
 ctool scp alderaan 0 configure_schema /home/automaton
-ctool run alderaan './configure_schema'
+ctool run alderaan 0 './configure_schema'
 
 echo "Sleeping for 1 hour to allow data popualation before initiating Advanced Replication"
 #sleep 3600
 
-DEATH_STAR_ADDRESS=`ctool info death_star | grep "public hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
-ctool run yavin_4 0 'dse advrep edge conf --edge-id "yavin_4" --edge-id-col-name "edge_id" --hub-ip-addresses "${DEATH_STAR_ADDRESS}"'
-ctool run alderaan 0 'dse advrep edge conf --edge-id "alderaan" --edge-id-col-name "edge_id" --hub-ip-addresses "${DEATH_STAR_ADDRESS}"'
-ctool run yavin_4 0 'dse advrep edge channel create --keyspace yavin --table colonial_data --hub-keyspace galaxy --hub-table colonial_data --priority 1 --edge-id yavin --edge-id-col-name edge_id --enabled'
-ctool run alderaan 0 'dse advrep edge channel create --keyspace alderaan --table colonial_data --hub-keyspace galaxy --hub-table colonial_data --priority 1 --edge-id alderaan --edge-id-col-name edge_id --enabled'
-
-ctool run yavin_4 0 'dse advrep edge start'
-ctool run alderaan 0 'dse advrep edge start'
 #ed -i -e 's/foo/bar/g' filename
 
 #script files on namek and tatooine should create dense node clusters using loopback addresses
