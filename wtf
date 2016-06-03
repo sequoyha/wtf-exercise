@@ -26,8 +26,6 @@ ctool start yavin_4 enterprise &
 wait
 echo "DSE started on All clusters"
 
-#INSERT ADD CLUSTER FOR OPSCENTER HERE
-
 ctool scp alderaan 0 config/configure_dense_nodes /home/automaton
 ctool scp yavin_4 0 config/configure_dense_nodes /home/automaton
 
@@ -39,7 +37,7 @@ echo "sleeping 30 seconds to allow configuration changes to take effect"
 sleep 30
 
 echo "Starting DSE and additional nodes on alderaan cluster"
-ctool restart alderaan 0 enterprise
+ctool restart alderaan 0
 echo "Sleeping 60 seconds to allow restart to complete"
 sleep 60
 echo "Starting dse-alderaan_1"
@@ -54,7 +52,7 @@ echo "Verifying all nodes in alderaan cluster are up and normal"
 ctool run alderaan 0 'nodetool status'
 
 echo "Starting DSE and additional nodes on yavin_4 cluster"
-ctool restart yavin_4 0 enterprise
+ctool restart yavin_4 0
 echo "Sleeping 60 seconds to allow restart to complete"
 sleep 60
 echo "Starting dse-yavin_4_1"
@@ -88,8 +86,6 @@ echo $DEATH_STAR_ADDRESS >> hub_addresses_for_advanced_replication
 echo "Sending IP addresses for death_star cluster to yavin_4 and alderaan"
 ctool scp yavin_4 0 hub_addresses_for_advanced_replication /home/automaton
 ctool scp alderaan 0 hub_addresses_for_advanced_replication /home/automaton
-
-#ed -i -e 's/foo/bar/g' filename
 
 #script files on namek and tatooine should create dense node clusters using loopback addresses
 # hub nodes should be using tiered storage
