@@ -66,17 +66,6 @@ sleep 300
 echo "Verifying all nodes in yavin_4 cluster are up and normal"
 ctool run yavin_4 0 'nodetool status'
 
-echo "Beginning schema work on yavin_4"
-ctool scp yavin_4 0 config/configure_schema /home/automaton
-ctool run yavin_4 0 './configure_schema'
-
-echo "Beginning schema work on alderaan"
-ctool scp alderaan 0 config/configure_schema /home/automaton
-ctool run alderaan 0 './configure_schema'
-
-echo "Sleeping for 1 hour to allow data popualation before initiating Advanced Replication"
-#sleep 3600
-
 echo "Gathering death_star IP addresses for Advanced Replication configuration"
 for num in 0 1 2
 	do DEATH_STAR_ADDRESS=`ctool info death_star | grep -A2 "Node ${num}:" | grep "public ip:" | cut -d : -f2 | sed -e 's/^[ \t]*//'`,$DEATH_STAR_ADDRESS
@@ -87,9 +76,13 @@ echo "Sending IP addresses for death_star cluster to yavin_4 and alderaan"
 ctool scp yavin_4 0 hub_addresses_for_advanced_replication /home/automaton
 ctool scp alderaan 0 hub_addresses_for_advanced_replication /home/automaton
 
-#script files on namek and tatooine should create dense node clusters using loopback addresses
-# hub nodes should be using tiered storage
-# namek and tatooine should replicate to hub
-# namek should have issue with replication introduced - schema change fixed by a restart of the edge
+#move following to on node only
+echo "Beginning schema work on yavin_4"
+ctool scp yavin_4 0 config/configure_schema /home/automaton
+ctool run yavin_4 0 './configure_schema' &
+
+echo "Beginning schema work on alderaan"
+ctool scp alderaan 0 config/configure_schema /home/automaton
+ctool run alderaan 0 './configure_schema' &
 
 
