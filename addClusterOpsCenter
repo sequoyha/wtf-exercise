@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ALDERAAN_ADDRESS=`ctool info alderaan | grep "public hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+YAVIN_4_ADDRESS=`ctool info yavin_4 | grep "public hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+DEATH_STAR_ADDRESS=`ctool info death_star | grep "public hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+BOTHANS_ADDRESS=`ctool info bothans | grep "public hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+
+for address in $ALDERAAN_ADDRESS $YAVIN_4_ADDRESS $DEATH_STAR_ADDRESS
+	do
+		curl -X POST http://127.0.0.1:8888/cluster-configs -d '{"cassandra": {"seed_hosts": "${address}"},"cassandra_metrics": {},"jmx": {"port": "7199"}}'
+done
