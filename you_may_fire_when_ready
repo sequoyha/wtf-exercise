@@ -1,0 +1,4 @@
+#!/bin/bash
+for cluster in `ctool list | cut -d, -f1`
+	do ctool destroy $cluster
+done
