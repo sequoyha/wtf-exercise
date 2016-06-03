@@ -1,0 +1,27 @@
+#!/bin/bash
+
+CLUSTER=`sudo grep cluster_name /etc/dse/cassandra/cassandra.yaml | cut -d: -f2 | sed -e 's/^[ \t]*//'`
+DEATH_STAR_ADDRESS=`cat hub_addresses_for_advanced_replication`
+
+for node in dse dse-"${CLUSTER}_1" dse-"${CLUSTER}_2"
+	do
+		echo "Modifying dse.yaml file for $node"
+		sudo sed -i "s/#advanced_replication_options:/advanced_replication_options:/" /etc/$node/dse.yaml
+		sudo sed -i "s/#  enabled: false/  enabled: true/" /etc/$node/dse.yaml 
+		sudo sed -i "s/#  conf_driver_password_encryption_enabled: false/  conf_driver_password_encryption_enabled: false/" /etc/$node/dse.yaml
+
+		echo "Creating edge"
+		dse advrep edge conf --edge-id "$node" --edge-id-col-name "edge_id" --hub-ip-addresses "$DEATH_STAR_ADDRESS"
+		dse advrep edge list-conf
+		KEYSPACE=`echo $CLUSTER | sed 's/\_.*$//'`
+
+		echo "Creating replication channel"
+		dse advrep edge channel create --keyspace $KEYSPACE --table colonial_data --hub-keyspace galaxy --hub-table colonial_data --priority 1 --edge-id $KEYSPACE --edge-id-col-name edge_id --enabled
+		dse advrep edge channel status
+
+		echo "Startin Advanced Replication on $node"
+		dse advrep edge start
+		dse advrep edge status
+
+		unset KEYSPACE
+done
