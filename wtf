@@ -37,36 +37,45 @@ ctool run alderaan 0 './configure_dense_nodes'
 echo "Setting up Multi-instance on yavin_4 cluster"
 ctool run yavin_4 0 './configure_dense_nodes'
 echo "sleeping 30 seconds to allow configuration changes to take effect"
-date
 sleep 30
-date
 
 echo "Starting DSE and additional nodes on alderaan cluster"
-date
-ctool start alderaan enterprise
+ctool restart alderaan enterprise
+echo "Sleeping 60 seconds to allow restart to complete"
 sleep 60
-date
+echo "Starting dse-alderaan_1"
 ctool run alderaan 0 'sudo service dse-alderaan_1 start'
+echo "Sleeping 5 minutes to allow dse-alderaan_1 to bootstrap fully"
 sleep 300
-date
+echo "Starting dse-alderaan_2"
 ctool run alderaan 0 'sudo service dse-alderaan_2 start'
+echo "Sleeping 5 minutes to allow dse-alderaan_1 to bootstrap fully"
 sleep 300
-date
+echo "Verifying all nodes in alderaan cluster are up and normal"
 ctool run alderaan 0 'nodetool status'
 
 echo "Starting DSE and additional nodes on yavin_4 cluster"
-date
-ctool start yavin_4 enterprise
+ctool restart yavin_4 enterprise
+echo "Sleeping 60 seconds to allow restart to complete"
 sleep 60
-date
+echo "Starting dse-yavin_4_1"
 ctool run yavin_4 0 'sudo service dse-yavin_4_1 start'
+echo "Sleeping 5 minutes to allow dse-yavin_4_1 to bootstrap fully"
 sleep 300
-date
+echo "Starting dse-yavin_4_2"
 ctool run yavin_4 0 'sudo service dse-yavin_4_2 start'
+echo "Sleeping 5 minutes to allow dse-yavin_4_1 to bootstrap fully"
 sleep 300
-date
+echo "Verifying all nodes in yavin_4 cluster are up and normal"
 ctool run yavin_4 0 'nodetool status'
 
+echo "Beginning schema work on yavin_4"
+ctool scp yavin_4 0 configure_schema /home/automaton
+ctool run yavin_4 './configure_schema'
+
+echo "Beginning schema work on alderaan"
+ctool scp alderaan 0 configure_schema /home/automaton
+ctool run alderaan './configure_schema'
 #ed -i -e 's/foo/bar/g' filename
 
 #script files on namek and tatooine should create dense node clusters using loopback addresses
