@@ -26,8 +26,7 @@ ctool start yavin enterprise &
 wait
 echo "DSE started on All clusters"
 
-#ALDERAAN_ADDRESS=`ctool info alderaan | grep "private hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
-#YAVIN_4_ADDRESS=`ctool info yavin_4 | grep "private hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+#INSERT ADD CLUSTER FOR OPSCENTER HERE
 
 ctool scp alderaan 0 configure_dense_nodes /home/automaton
 ctool scp yavin_4 0 configure_dense_nodes /home/automaton
@@ -76,6 +75,18 @@ ctool run yavin_4 './configure_schema'
 echo "Beginning schema work on alderaan"
 ctool scp alderaan 0 configure_schema /home/automaton
 ctool run alderaan './configure_schema'
+
+echo "Sleeping for 1 hour to allow data popualation before initiating Advanced Replication"
+#sleep 3600
+
+DEATH_STAR_ADDRESS=`ctool info death_star | grep "public hostname" | cut -d : -f2 | sed -e 's/^[ \t]*//'`
+ctool run yavin_4 0 'dse advrep edge conf --edge-id "yavin_4" --edge-id-col-name "edge_id" --hub-ip-addresses "${DEATH_STAR_ADDRESS}"'
+ctool run alderaan 0 'dse advrep edge conf --edge-id "alderaan" --edge-id-col-name "edge_id" --hub-ip-addresses "${DEATH_STAR_ADDRESS}"'
+ctool run yavin_4 0 'dse advrep edge channel create --keyspace yavin --table colonial_data --hub-keyspace galaxy --hub-table colonial_data --priority 1 --edge-id yavin --edge-id-col-name edge_id --enabled'
+ctool run alderaan 0 'dse advrep edge channel create --keyspace alderaan --table colonial_data --hub-keyspace galaxy --hub-table colonial_data --priority 1 --edge-id alderaan --edge-id-col-name edge_id --enabled'
+
+ctool run yavin_4 0 'dse advrep edge start'
+ctool run alderaan 0 'dse advrep edge start'
 #ed -i -e 's/foo/bar/g' filename
 
 #script files on namek and tatooine should create dense node clusters using loopback addresses
