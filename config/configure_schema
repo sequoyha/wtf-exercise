@@ -9,18 +9,22 @@ if [ $CLUSTER == "alderaan" ]
 then 
 	echo "creating schema for alderaan"
 	cqlsh -f wtf-exercise/cql_scripts/alderaan.cql
+	wait
 	echo "Setting up Advanced replication for alderaan"
 	wtf-exercise/config/AR_setup
+	wait
 	echo "starting schieldClient for alderaan" 
-	java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER
+	java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER &
 elif [ $CLUSTER == "yavin_4" ]
 then 
 	echo "creating schema for yavin_4"
 	cqlsh -f wtf-exercise/cql_scripts/yavin.cql
+	wait
 	echo "Setting up Advanced replication for yavin_4"
 	wtf-exercise/config/AR_setup
 	echo "starting schieldClient for yavin_4"
-	java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER
+	wait
+	java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER &
 elif [ $CLUSTER == "death_star" ]
 then 
 	echo "creating schema for death_star (galaxy)"
