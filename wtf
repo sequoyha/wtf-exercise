@@ -85,4 +85,8 @@ echo "Beginning schema work on alderaan"
 ctool scp alderaan 0 config/configure_schema /home/automaton
 ctool run alderaan 0 './configure_schema' &
 
+echo "Sleeping for 2 hours for initial data population"
+sleep 7200
 
+for node in 0 2; do ctool run death_star $node 'wtf-exercise/config/Tiered_star'; ctool restart death_star $node; done
+ctool run death_star 1 'wtf-exercise/config/Tiered_death'; ctool restart death_star 1

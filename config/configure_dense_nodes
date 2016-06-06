@@ -9,15 +9,4 @@ sudo sed -i -e 's/9042/9043/g' /etc/dse-"${CLUSTER}_1"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9160/9162/g' /etc/dse-"${CLUSTER}_2"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9042/9043/g' /etc/dse-"${CLUSTER}_2"/cassandra/cassandra.yaml
 
-if [ $CLUSTER == "alderaan" ]
-then 
-	echo "creating schema for alderaan"
-	echo "pulling schieldClient"
-	echo "starting schieldClient for alderaan" 
-elif [ $CLUSTER == "yavin_4" ]
-then 
-	echo "creating schema for yavin_4"
-	echo "pulling schieldClient"
-	echo "starting schieldClient for yavin_4"
-fi
 
