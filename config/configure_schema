@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git clone https://github.com/sequoyha/wtf-exercise.git
+#git clone https://github.com/sequoyha/wtf-exercise.git
 
 HOST_ADDR=`ifconfig | grep "inet addr" | grep -v 127 | awk '{print $2}' | cut -d: -f2`
 CLUSTER=`sudo grep cluster_name /etc/dse/cassandra/cassandra.yaml | cut -d: -f2 | sed -e 's/^[ \t]*//'`
@@ -8,25 +8,25 @@ CLUSTER=`sudo grep cluster_name /etc/dse/cassandra/cassandra.yaml | cut -d: -f2 
 if [ $CLUSTER == "alderaan" ]
 then 
 	echo "creating schema for alderaan"
-	cqlsh -f wtf-exercise/cql_scripts/alderaan.cql
+	cqlsh -f ~/wtf-exercise/cql_scripts/alderaan.cql
 	wait
 	echo "Setting up Advanced replication for alderaan"
-	wtf-exercise/config/AR_setup
+	~/wtf-exercise/config/AR_setup
 	wait
 	echo "starting schieldClient for alderaan" 
-	java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER &
+	java -jar ~/wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER &
 elif [ $CLUSTER == "yavin_4" ]
 then 
 	echo "creating schema for yavin_4"
-	cqlsh -f wtf-exercise/cql_scripts/yavin.cql
+	cqlsh -f ~/wtf-exercise/cql_scripts/yavin.cql
 	wait
 	echo "Setting up Advanced replication for yavin_4"
-	wtf-exercise/config/AR_setup
+	~/wtf-exercise/config/AR_setup
 	echo "starting schieldClient for yavin_4"
 	wait
-	java -jar wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER &
+	java -jar ~/wtf-exercise/client/ShieldClient.jar $HOST_ADDR $CLUSTER &
 elif [ $CLUSTER == "death_star" ]
 then 
 	echo "creating schema for death_star (galaxy)"
-	cqlsh -f wtf-exercise/cql_scripts/galaxy.cql
+	cqlsh -f ~/wtf-exercise/cql_scripts/galaxy.cql
 fi
