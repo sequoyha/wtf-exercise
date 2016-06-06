@@ -1,10 +1,10 @@
 #!/bin/bash
 
 sudo mkdir /mnt_older /mnt_oldest
-sudo sed "s/#tiered_storage_options:/tiered_storage_options:/" /etc/dse/dse.yaml
-sudo sed "s/#  strategy1:/  strategy1:/" /etc/dse/dse.yaml
-sudo sed "s/#    tiers:/    tiers:/" /etc/dse/dse.yaml
-sudo sed "s/#      - paths:/      - paths:/g" /etc/dse/dse.yaml
-sudo sed "s/#          - /mnt1/#          - /var/lib/cassandra/data/" /etc/dse/dse.yaml
-sudo sed "s/#          - /mnt3/#          - /mnt_older/" /etc/dse/dse.yaml
-sudo sed "s/#          - /mnt5/#          - /mnt_oldest/" /etc/dse/dse.yaml
+sudo sed -i "s/#tiered_storage_options:/tiered_storage_options:/" /etc/dse/dse.yaml
+sudo sed -i "s/#  strategy1:/  strategy1:/" /etc/dse/dse.yaml
+sudo sed -i "s/#    tiers:/    tiers:/" /etc/dse/dse.yaml
+sudo sed -i "s/#      - paths:/      - paths:/g" /etc/dse/dse.yaml
+sudo sed -i "s/#          - /mnt1/          - /var/lib/cassandra/data/" /etc/dse/dse.yaml
+sudo sed -i "s/#          - /mnt3/          - /mnt_older/" /etc/dse/dse.yaml
+sudo sed -i "s/#          - /mnt5/          - /mnt_oldest/" /etc/dse/dse.yaml
