@@ -7,10 +7,6 @@ CREATE TABLE alderaan.colonial_data (
     read_time timestamp,
     sequence int,
     interval int,
-    flowthrough_velocity int,
-    pressure double,
-    temperature float,
-    volume float,
     PRIMARY KEY ((date_hour, id), read_time, sequence, interval)
 ) WITH CLUSTERING ORDER BY (read_time ASC, sequence ASC, interval ASC)
     AND bloom_filter_fp_chance = 0.01
