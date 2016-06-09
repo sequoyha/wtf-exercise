@@ -3,7 +3,7 @@
 config create_schema: true, load_threads: 3, load_new: true
 
 inputfiledir = '/home/sequoyha/graph_testing/'
-itemInput = File.json(inputfiledir + 'metadata.json')
+itemInput = File.json(inputfiledir + 'amazon_metadata.json')
 
 load(itemInput).asVertices	{
 	label "item"
