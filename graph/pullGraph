@@ -3,6 +3,6 @@
 echo "Pulling Amazon review data"
 sudo wget --directory-prefix=/mnt/graph http://snap.stanford.edu/data/amazon/productGraph/complete.json.gz
 echo "Pulling Amazon Item metadata"
-sudo wget  --directory-prefix=/mnt/graphhttp://snap.stanford.edu/data/amazon/productGraph/metadata.json.gz
+sudo wget  --directory-prefix=/mnt/graph http://snap.stanford.edu/data/amazon/productGraph/metadata.json.gz
 echo "Extracting data for use with graphloader"
 sudo python convertAmazonData.py 
