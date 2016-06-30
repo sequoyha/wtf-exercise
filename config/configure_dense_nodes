@@ -2,8 +2,8 @@
 
 HOST_ADDR=`ifconfig | grep "inet addr" | grep -v 127 | awk '{print $2}' | cut -d: -f2`
 CLUSTER=`sudo grep cluster_name /etc/dse/cassandra/cassandra.yaml | cut -d: -f2 | sed -e 's/^[ \t]*//'`
-sudo dse add-node --node-id="${CLUSTER}_1" --cluster=$CLUSTER --jmxport=7299 --listen-address=127.0.0.21 --rpc-address=127.0.0.21 --max-heap-size=10G --heap-newsize=3G --seeds=$HOST_ADDR --num-tokens=128
-sudo dse add-node --node-id="${CLUSTER}_2" --cluster=$CLUSTER --jmxport=7399 --listen-address=127.0.0.37 --rpc-address=127.0.0.37 --max-heap-size=10G --heap-newsize=3G --seeds=$HOST_ADDR --num-tokens=128
+sudo dse add-node --node-id="${CLUSTER}_1" --cluster=$CLUSTER --jmxport=7299 --listen-address=127.0.0.21 --rpc-address=127.0.0.21 --max-heap-size=6G --seeds=$HOST_ADDR --num-tokens=128
+sudo dse add-node --node-id="${CLUSTER}_2" --cluster=$CLUSTER --jmxport=7399 --listen-address=127.0.0.37 --rpc-address=127.0.0.37 --max-heap-size=10G --seeds=$HOST_ADDR --num-tokens=128
 sudo sed -i -e 's/9160/9161/g' /etc/dse-"${CLUSTER}_1"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9042/9043/g' /etc/dse-"${CLUSTER}_1"/cassandra/cassandra.yaml
 sudo sed -i -e 's/9160/9162/g' /etc/dse-"${CLUSTER}_2"/cassandra/cassandra.yaml
